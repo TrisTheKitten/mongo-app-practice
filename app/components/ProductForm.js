@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 const defaultFormValues = {
   code: "",
@@ -23,7 +23,7 @@ export default function ProductForm({ initialValues = defaultFormValues, categor
     };
   }, [initialValues]);
 
-  const { register, handleSubmit, reset } = useForm({ defaultValues: normalizedValues });
+  const { control, handleSubmit, reset } = useForm({ defaultValues: normalizedValues });
 
   useEffect(() => {
     reset(normalizedValues);
@@ -32,6 +32,7 @@ export default function ProductForm({ initialValues = defaultFormValues, categor
   function submitHandler(data) {
     const payload = {
       ...initialValues,
+      ...data,
       price: data.price === "" ? null : Number(data.price)
     };
     onSubmit(payload);
@@ -52,54 +53,94 @@ export default function ProductForm({ initialValues = defaultFormValues, categor
       <div className="grid gap-5 px-6 py-6 sm:grid-cols-2">
         <label className="text-sm font-medium text-gray-700" htmlFor="product-code">Code</label>
         <div>
-          <input
-            id="product-code"
-            type="text"
-            {...register("code", { required: true })}
-            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          <Controller
+            name="code"
+            control={control}
+            rules={{ required: true }}
+            defaultValue={normalizedValues.code}
+            render={({ field }) => (
+              <input
+                {...field}
+                id="product-code"
+                type="text"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              />
+            )}
           />
         </div>
         <label className="text-sm font-medium text-gray-700" htmlFor="product-name">Name</label>
         <div>
-          <input
-            id="product-name"
-            type="text"
-            {...register("name", { required: true })}
-            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          <Controller
+            name="name"
+            control={control}
+            rules={{ required: true }}
+            defaultValue={normalizedValues.name}
+            render={({ field }) => (
+              <input
+                {...field}
+                id="product-name"
+                type="text"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              />
+            )}
           />
         </div>
         <label className="text-sm font-medium text-gray-700" htmlFor="product-description">Description</label>
         <div>
-          <textarea
-            id="product-description"
-            {...register("description", { required: true })}
-            className="h-24 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          <Controller
+            name="description"
+            control={control}
+            rules={{ required: true }}
+            defaultValue={normalizedValues.description}
+            render={({ field }) => (
+              <textarea
+                {...field}
+                id="product-description"
+                className="h-24 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              />
+            )}
           />
         </div>
         <label className="text-sm font-medium text-gray-700" htmlFor="product-price">Price</label>
         <div>
-          <input
-            id="product-price"
-            type="number"
-            step="0.01"
-            {...register("price", { required: true })}
-            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          <Controller
+            name="price"
+            control={control}
+            rules={{ required: true }}
+            defaultValue={normalizedValues.price}
+            render={({ field }) => (
+              <input
+                {...field}
+                id="product-price"
+                type="number"
+                step="0.01"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              />
+            )}
           />
         </div>
         <label className="text-sm font-medium text-gray-700" htmlFor="product-category">Category</label>
         <div>
-          <select
-            id="product-category"
-            {...register("category", { required: true })}
-            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-            disabled={categories.length === 0}
-          >
-            {categories.map((item) => (
-              <option key={item._id} value={item._id}>
-                {item.name}
-              </option>
-            ))}
-          </select>
+          <Controller
+            name="category"
+            control={control}
+            rules={{ required: true }}
+            defaultValue={normalizedValues.category}
+            render={({ field }) => (
+              <select
+                {...field}
+                id="product-category"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                disabled={categories.length === 0}
+              >
+                {categories.map((item) => (
+                  <option key={item._id} value={item._id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
         </div>
       </div>
       <div className="flex items-center justify-end gap-3 border-t border-gray-100 px-6 py-4">
